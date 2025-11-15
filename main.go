@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 
@@ -24,6 +25,7 @@ func main() {
 	}
 
 	fmt.Printf("Итоговая сумма: %.2f\n", cart.Total())
+	waitForExit()
 }
 
 func loadFile(cart *shop.Cart, path string) error {
@@ -37,6 +39,19 @@ func loadFile(cart *shop.Cart, path string) error {
 }
 
 func fail(err error) {
-	fmt.Fprintf(os.Stderr, "ошибка: %v\n", err)
+	fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
 	os.Exit(1)
+}
+
+func waitForExit() {
+	fmt.Println("Нажмите Enter или Ctrl+C для выхода...")
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return
+	}
+	if stat.Mode()&os.ModeCharDevice == 0 {
+		return
+	}
+
+	bufio.NewReader(os.Stdin).ReadString('\n')
 }
